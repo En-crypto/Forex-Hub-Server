@@ -5,9 +5,20 @@ const cors = require('cors');
 const { default: axios } = require('axios');
 const server = express();
 server.use(cors());
+const PORT =process.env.PORT;
+
 server.get('/', (req, res) => {
    res.status(200).send('Home');
 })
-server.listen(3001, () => {
-   console.log(`Listening on PORT http://localhost:3001/`);
+server.listen(PORT, () => {
+   console.log(`Listening on PORT ${PORT}`);
 })
+
+const exchange = require('./exchange');
+server.get('/rate',exchange)
+
+
+server.get('*',(req,res)=>{
+   
+    res.status(404).send('invalid request to backend')
+});
