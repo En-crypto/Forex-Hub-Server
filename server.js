@@ -24,8 +24,17 @@ server.listen(PORT, () => {
 })
 
 const exchange = require('./exchange');
+const converter = require('./converter');
+const symbols = require('./symbols');
+
+
 
 server.get('/rate', exchange);
+server.get('/convert', converter);
+server.get('/symbols', symbols);
+
+
+
 
 server.get('*', (req, res) => {
 
