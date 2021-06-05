@@ -26,6 +26,7 @@ server.listen(PORT, () => {
 const exchange = require('./exchange');
 
 server.get('/rate', exchange);
+server.post('/contactUs', contactHandler)
 
 server.get('*', (req, res) => {
 
@@ -79,10 +80,19 @@ const userInfoSchema = new mongoose.Schema({
 });
 
 
+// Maryam & Mo3tasem 
+
+const userFeedbackSchema = new mongoose.Schema({
+   userName: String,
+   userEmail: String,
+   userNumber: String,
+   userFeedback: String,
+
+});
 
 const userInfoModel = mongoose.model('info', userInfoSchema);
 const currencyModel = mongoose.model('currency', currencySchema);
-
+const userFeedbackModel = mongoose.model('contactUs', userFeedbackSchema)
 
 function currencySeed() {
    const USD = new currencyModel({
@@ -127,5 +137,39 @@ function infoSeed() {
    })
    mohammed.save();
 }
-
 // infoSeed();
+function contactHandler (req,res){
+
+   const {userName, userEmail, userNumber, userFeedback} = req.body;
+
+   let currentUser ={};
+   const feedbackuser = userFeedbackModel({
+      userName: req.body.userName,
+      userEmail:req.body.userEmail,
+      userNumber:req.body.userNumber,
+      userFeedback:req.body.userFeedback,
+   });
+   feedbackuser.save();
+   res.send(feedbackuser);
+
+   console.log('handlerFunction',feedbackuser);
+   console.log('555555555');
+}
+
+function ContactUsseed(){
+   const newUser = new userFeedbackModel({
+    userName: 'maryam',
+    userEmail:'maryam@gmail.com',
+    userNumber:'0790790790',
+    userFeedback:'Hello',
+
+   })
+// console.log(newUser);
+   //  newUser.save();
+}
+// ContactUsseed();
+
+// userName: String,
+// userEmail: String,
+// userNumber: String,
+// userFeedback: String,
