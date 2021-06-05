@@ -10,7 +10,6 @@ function  gettingDataExchange(req,res) {
     .get(exchangeUrl)
     .then(item=>{
         let result=item.data;
-        console.log('result',result);
         res.status(200).send(result);
 
     })
