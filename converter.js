@@ -9,7 +9,7 @@ function  gettingDataconvert(req,res) {
     .get(convertUrl)
     .then(item=>{
         let result=item.data;
-        console.log('result',result);
+        console.log('result',result.result);
         res.status(200).send(result);
 
     })
