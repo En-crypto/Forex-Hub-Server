@@ -24,6 +24,9 @@ server.listen(PORT, () => {
 })
 
 const exchange = require('./exchange');
+const history = require('./state');
+
+server.get('/history', history);
 
 server.get('/rate', exchange);
 
