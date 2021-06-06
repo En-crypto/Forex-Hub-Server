@@ -15,6 +15,11 @@ server.use(bp.urlencoded({ extended: true }));
 server.get('/', (req, res) => {
    res.status(200).send('Home');
 })
+server.get('/getfeed',async (req, res) => {
+   let data =await userFeedbackModel.find({});
+   console.log(data);
+   res.status(200).send(data);
+})
 server.get('/currency', (req, res) => {
    console.log("hello mhesen");
    // res.status(200).send('Home');
@@ -52,7 +57,7 @@ mongoose.connect('mongodb://localhost:27017',
 
 function addUser(req, res) {
    const { name, email, image_url, interests } = req.body;
-   let currentUser ={};
+   let currentUser = {};
    const user = new userInfoModel({
       name: req.body.name,
       email: req.body.email,
@@ -64,9 +69,9 @@ function addUser(req, res) {
       if (error) {
          res.send('User not found');
       }
-      else{
+      else {
          userData.forEach(item => {
-            if(item.email === email) {
+            if (item.email === email) {
                currentUser = item;
             }
          })
@@ -148,34 +153,34 @@ function infoSeed() {
    mohammed.save();
 }
 // infoSeed();
-function contactHandler (req,res){
+function contactHandler(req, res) {
 
-   const {userName, userEmail, userNumber, userFeedback} = req.body;
+   const { userName, userEmail, userNumber, userFeedback } = req.body;
 
-   let currentUser ={};
+   let currentUser = {};
    const feedbackuser = userFeedbackModel({
       userName: req.body.userName,
-      userEmail:req.body.userEmail,
-      userNumber:req.body.userNumber,
-      userFeedback:req.body.userFeedback,
+      userEmail: req.body.userEmail,
+      userNumber: req.body.userNumber,
+      userFeedback: req.body.userFeedback,
    });
    feedbackuser.save();
    res.send(feedbackuser);
 
-   console.log('handlerFunction',feedbackuser);
+   console.log('handlerFunction', feedbackuser);
    console.log('555555555');
 }
 
-function ContactUsseed(){
+function ContactUsseed() {
    const newUser = new userFeedbackModel({
-    userName: 'maryam',
-    userEmail:'maryam@gmail.com',
-    userNumber:'0790790790',
-    userFeedback:'Hello',
+      userName: 'maryam',
+      userEmail: 'maryam@gmail.com',
+      userNumber: '0790790790',
+      userFeedback: 'Hello',
 
    })
-// console.log(newUser);
-   //  newUser.save();
+   // console.log(newUser);
+   newUser.save();
 }
 // ContactUsseed();
 
@@ -183,3 +188,6 @@ function ContactUsseed(){
 // userEmail: String,
 // userNumber: String,
 // userFeedback: String,
+
+
+

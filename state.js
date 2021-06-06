@@ -12,14 +12,13 @@ function  gethistoricalData(req,res) {
         let result=item.data;
         let final = Object.values(result.rates);
         let resultArr = [];
-        let AUD  =   final[0].AUD - final[final.length-1].AUD;
-        let CAD  =   final[0].CAD - final[final.length-1].CAD;
-        let EGP  =   final[0].EGP - final[final.length-1].EGP;
-        let EUR  =   final[0].EUR - final[final.length-1].EUR;
-        let GBP  =   final[0].GBP - final[final.length-1].GBP;
-        let JOD  =   final[0].JOD - final[final.length-1].JOD;
-        let USD  =   final[0].USD - final[final.length-1].USD;
-
+        let AUD  =   final[final.length-1].AUD - final[final.length-2].AUD;
+        let CAD  =   final[final.length-1].CAD - final[final.length-2].CAD;
+        let EGP  =   final[final.length-1].EGP - final[final.length-2].EGP;
+        let EUR  =   final[final.length-1].EUR - final[final.length-2].EUR;
+        let GBP  =   final[final.length-1].GBP - final[final.length-2].GBP;
+        let JOD  =   final[final.length-1].JOD - final[final.length-2].JOD;
+        let USD  =   final[final.length-1].USD - final[final.length-2].USD;
         resultArr.push(Math.sign(AUD));
         resultArr.push(Math.sign(CAD));
         resultArr.push(Math.sign(EGP));
@@ -27,7 +26,7 @@ function  gethistoricalData(req,res) {
         resultArr.push(Math.sign(GBP));
         resultArr.push(Math.sign(JOD));
         resultArr.push(Math.sign(USD));
-
+        console.log(final);
         console.log('final', AUD);
         res.status(200).send(resultArr);
 
