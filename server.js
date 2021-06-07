@@ -37,8 +37,8 @@ const history = require('./state');
 
 server.get('/history', history);
 
+server.delete('/deletefeed/:index', deleteFeedHandler);
 server.get('/rate', exchange);
-
 server.post('/contactUs', contactHandler);
 server.post('/addToFavorite', addToFavorite);
 server.get('/convert', converter);
@@ -59,8 +59,6 @@ function addToFavorite(req, res) {
    res.status(200).send(name1);
 
 }
-
-   server.delete('/deletefeed/:index', deleteFeedHandler);
 
    server.get('*', (req, res) => {
 
@@ -208,22 +206,23 @@ function addToFavorite(req, res) {
    }
 
    async function deleteFeedHandler(req, res) {
-      const email = req.body.userEmail;
-      const index = Number(req.params.index)
-      let allFeeds = await userFeedbackModel.find({});
-
-      let newFeeds = allFeeds.filter((item, idx) => {
-         // console.log(item);
-         if (idx !== index) {
-            return item;
-
-         }
+      const index = Number(req.params.index);
+      let id = {};
+      let allFeeds = await userFeedbackModel.find({} , (err,data)=> {
+         data.map((item,idx) => {
+            if(idx == index) {
+               id = item._id;
+            }
+         })
+         
       })
-      console.log(newFeeds);
+      
+      userFeedbackModel.findByIdAndDelete(id , (err) => {
+         if(!err) {
+            console.log(err)
+         }
+      });
       res.send(allFeeds);
-
-
-      // console.log('req.query');
    }
 
 
