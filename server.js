@@ -58,7 +58,10 @@ function addToFavorite(req, res) {
 
    res.status(200).send(name1);
 
-}
+
+server.delete('/deletefeed/:index', deleteFeedHandler);
+
+
 server.get('*', (req, res) => {
 
    res.status(404).send('invalid request to backend')
@@ -146,6 +149,8 @@ function currencySeed() {
    EUR.save();
    GBP.save();
 }
+
+
 // currencySeed();
 function infoSeed() {
    const mohammed = new userInfoModel({
@@ -170,6 +175,19 @@ function infoSeed() {
    })
    mohammed.save();
 }
+
+
+function ContactUsseed() {
+   const newUser = new userFeedbackModel({
+      userName: 'maryam',
+      userEmail: 'maryam@gmail.com',
+      userNumber: '0790790790',
+      userFeedback: 'Hello',
+
+   })
+   // console.log(newUser);
+   newUser.save();
+}
 // infoSeed();
 function contactHandler(req, res) {
 
@@ -187,20 +205,30 @@ function contactHandler(req, res) {
    res.send(currentUser);
 
    console.log('handlerFunction', feedbackuser);
-   console.log('555555555');
 }
 
-function ContactUsseed() {
-   const newUser = new userFeedbackModel({
-      userName: 'maryam',
-      userEmail: 'maryam@gmail.com',
-      userNumber: '0790790790',
-      userFeedback: 'Hello',
+async function deleteFeedHandler(req, res) {
+   const email = req.body.userEmail;
+   const index = Number(req.params.index)
+   let allFeeds = await userFeedbackModel.find({});
 
-   })
-   // console.log(newUser);
-   newUser.save();
+  let newFeeds = allFeeds.filter((item,idx) => {
+      // console.log(item);
+      if (idx !== index) {
+           return item ;
+      
+   }
+})
+console.log(newFeeds);
+res.send(allFeeds);
+  
+   
+   // console.log('req.query');
 }
+
+
+
+
 // ContactUsseed();
 
 // userName: String,
