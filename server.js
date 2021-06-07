@@ -50,7 +50,7 @@ function addToFavorite(req, res) {
          console.log(err.message);
          res.status(500).send(err.message);
       } else {
-         data[0].favCurrency.push({name1,name2,price});
+         data[0].favCurrency.push({ name1, name2, price });
          data[0].save();
          console.log(data);
       }
@@ -58,173 +58,173 @@ function addToFavorite(req, res) {
 
    res.status(200).send(name1);
 
+}
 
-server.delete('/deletefeed/:index', deleteFeedHandler);
+   server.delete('/deletefeed/:index', deleteFeedHandler);
 
+   server.get('*', (req, res) => {
 
-server.get('*', (req, res) => {
-
-   res.status(404).send('invalid request to backend')
-});
-
-
-server.post('/addUser', addUser);
-const mongoose = require('mongoose');
-
-mongoose.connect('mongodb://localhost:27017',
-   { useNewUrlParser: true, useUnifiedTopology: true });
-
-async function addUser(req, res) {
-   const { name, email, image_url, interests } = req.body;
-   let currentUser = {};
-   const user = new userInfoModel({
-      name: req.body.name,
-      email: req.body.email,
-      image_url: req.body.image_url,
-      interests: req.body.interests
+      res.status(404).send('invalid request to backend')
    });
-   console.log('user', user);
-   let dbData = await userInfoModel.find({});
-   console.log(dbData);
-   dbData.map(item => {
-      if (item.email === email) {
-         currentUser = user;
-      }
-   })
-
-   if (Object.keys(currentUser).length === 0) {
-      currentUser = user;
-      user.save();
-   }
-   res.send(currentUser);
-}
-const currencySchema = new mongoose.Schema({
-   name1: String,
-   name2: String,
-   price: Number
-})
-
-const userInfoSchema = new mongoose.Schema({
-   name: String,
-   email: String,
-   image_url: String,
-   interests: String,
-   favCurrency: [currencySchema]
-});
 
 
-// Maryam & Mo3tasem 
+   server.post('/addUser', addUser);
+   const mongoose = require('mongoose');
 
-const userFeedbackSchema = new mongoose.Schema({
-   userName: String,
-   userEmail: String,
-   userNumber: String,
-   userFeedback: String,
+   mongoose.connect('mongodb://localhost:27017',
+      { useNewUrlParser: true, useUnifiedTopology: true });
 
-});
-
-const userInfoModel = mongoose.model('info', userInfoSchema);
-const currencyModel = mongoose.model('currency', currencySchema);
-const userFeedbackModel = mongoose.model('contactUs', userFeedbackSchema)
-
-function currencySeed() {
-   const USD = new currencyModel({
-      name1: 'USD',
-      name2: 'GBP',
-      price: 1
-   })
-   const GBP = new currencyModel({
-      name1: 'USD',
-      name2: 'GBP',
-      price: 1
-   })
-
-   const EUR = new currencyModel({
-      name1: 'USD',
-      name2: 'GBP',
-      price: 1
-   })
-
-   USD.save();
-   EUR.save();
-   GBP.save();
-}
-
-
-// currencySeed();
-function infoSeed() {
-   const mohammed = new userInfoModel({
-      name: 'Mohammed Mohiesen',
-      email: 'mmohiesen996@gmail.com',
-      image_url: 'image.com',
-      interests: 'Sleeping',
-      favCurrency: [
-         {
-            name: 'USD',
-            price: 1
-         },
-         {
-            name: 'EUR',
-            price: 1.13
-         },
-         {
-            name: 'GBP',
-            price: 1.25
+   async function addUser(req, res) {
+      const { name, email, image_url, interests } = req.body;
+      let currentUser = {};
+      const user = new userInfoModel({
+         name: req.body.name,
+         email: req.body.email,
+         image_url: req.body.image_url,
+         interests: req.body.interests
+      });
+      console.log('user', user);
+      let dbData = await userInfoModel.find({});
+      console.log(dbData);
+      dbData.map(item => {
+         if (item.email === email) {
+            currentUser = user;
          }
-      ]
-   })
-   mohammed.save();
-}
+      })
 
-
-function ContactUsseed() {
-   const newUser = new userFeedbackModel({
-      userName: 'maryam',
-      userEmail: 'maryam@gmail.com',
-      userNumber: '0790790790',
-      userFeedback: 'Hello',
-
-   })
-   // console.log(newUser);
-   newUser.save();
-}
-// infoSeed();
-function contactHandler(req, res) {
-
-   const { userName, userEmail, userNumber, userFeedback } = req.body;
-
-   let currentUser = {};
-   const feedbackuser = userFeedbackModel({
-      userName: req.body.userName,
-      userEmail: req.body.userEmail,
-      userNumber: req.body.userNumber,
-      userFeedback: req.body.userFeedback,
-   });
-   currentUser = feedbackuser;
-   currentUser.save();
-   res.send(currentUser);
-
-   console.log('handlerFunction', feedbackuser);
-}
-
-async function deleteFeedHandler(req, res) {
-   const email = req.body.userEmail;
-   const index = Number(req.params.index)
-   let allFeeds = await userFeedbackModel.find({});
-
-  let newFeeds = allFeeds.filter((item,idx) => {
-      // console.log(item);
-      if (idx !== index) {
-           return item ;
-      
+      if (Object.keys(currentUser).length === 0) {
+         currentUser = user;
+         user.save();
+      }
+      res.send(currentUser);
    }
-})
-console.log(newFeeds);
-res.send(allFeeds);
-  
-   
-   // console.log('req.query');
-}
+   const currencySchema = new mongoose.Schema({
+      name1: String,
+      name2: String,
+      price: Number
+   });
+
+   const userInfoSchema = new mongoose.Schema({
+      name: String,
+      email: String,
+      image_url: String,
+      interests: String,
+      favCurrency: [currencySchema]
+   });
+
+
+   // Maryam & Mo3tasem 
+
+   const userFeedbackSchema = new mongoose.Schema({
+      userName: String,
+      userEmail: String,
+      userNumber: String,
+      userFeedback: String,
+
+   });
+
+   const userInfoModel = mongoose.model('info', userInfoSchema);
+   const currencyModel = mongoose.model('currency', currencySchema);
+   const userFeedbackModel = mongoose.model('contactUs', userFeedbackSchema)
+
+   function currencySeed() {
+      const USD = new currencyModel({
+         name1: 'USD',
+         name2: 'GBP',
+         price: 1
+      })
+      const GBP = new currencyModel({
+         name1: 'USD',
+         name2: 'GBP',
+         price: 1
+      })
+
+      const EUR = new currencyModel({
+         name1: 'USD',
+         name2: 'GBP',
+         price: 1
+      })
+
+      USD.save();
+      EUR.save();
+      GBP.save();
+   }
+
+
+   // currencySeed();
+   function infoSeed() {
+      const mohammed = new userInfoModel({
+         name: 'Mohammed Mohiesen',
+         email: 'mmohiesen996@gmail.com',
+         image_url: 'image.com',
+         interests: 'Sleeping',
+         favCurrency: [
+            {
+               name: 'USD',
+               price: 1
+            },
+            {
+               name: 'EUR',
+               price: 1.13
+            },
+            {
+               name: 'GBP',
+               price: 1.25
+            }
+         ]
+      })
+      mohammed.save();
+   }
+
+
+   function ContactUsseed() {
+      const newUser = new userFeedbackModel({
+         userName: 'maryam',
+         userEmail: 'maryam@gmail.com',
+         userNumber: '0790790790',
+         userFeedback: 'Hello',
+
+      })
+      // console.log(newUser);
+      newUser.save();
+   }
+   // infoSeed();
+   function contactHandler(req, res) {
+
+      const { userName, userEmail, userNumber, userFeedback } = req.body;
+
+      let currentUser = {};
+      const feedbackuser = userFeedbackModel({
+         userName: req.body.userName,
+         userEmail: req.body.userEmail,
+         userNumber: req.body.userNumber,
+         userFeedback: req.body.userFeedback,
+      });
+      currentUser = feedbackuser;
+      currentUser.save();
+      res.send(currentUser);
+
+      console.log('handlerFunction', feedbackuser);
+   }
+
+   async function deleteFeedHandler(req, res) {
+      const email = req.body.userEmail;
+      const index = Number(req.params.index)
+      let allFeeds = await userFeedbackModel.find({});
+
+      let newFeeds = allFeeds.filter((item, idx) => {
+         // console.log(item);
+         if (idx !== index) {
+            return item;
+
+         }
+      })
+      console.log(newFeeds);
+      res.send(allFeeds);
+
+
+      // console.log('req.query');
+   }
 
 
 
@@ -235,6 +235,3 @@ res.send(allFeeds);
 // userEmail: String,
 // userNumber: String,
 // userFeedback: String,
-
-
-
