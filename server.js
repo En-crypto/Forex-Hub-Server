@@ -27,7 +27,7 @@ server.get('/currency', (req, res) => {
 server.listen(PORT, () => {
    console.log(`Listening on PORT ${PORT}`);
 })
-
+// const addToFavorite = require('./addfav');
 const exchange = require('./exchange');
 const converter = require('./converter');
 const symbols = require('./symbols');
@@ -39,9 +39,25 @@ server.get('/history', history);
 
 server.get('/rate', exchange);
 
-server.post('/contactUs', contactHandler)
+server.post('/contactUs', contactHandler);
+server.post('/addToFavorite', addToFavorite);
 server.get('/convert', converter);
 server.get('/symbols', symbols);
+function addToFavorite(req, res) {
+   const { name1, name2, price, email } = req.body
+   userInfoModel.find({ email: email }, (err, data) => {
+      if (err) {
+         console.log(err.message);
+         res.status(500).send(err.message);
+      } else {
+         data[0].favCurrency.push({name1,name2,price});
+         data[0].save();
+         console.log(data);
+      }
+   });
+
+   res.status(200).send(name1);
+
 
 server.delete('/deletefeed/:index', deleteFeedHandler);
 
@@ -58,7 +74,7 @@ const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:27017',
    { useNewUrlParser: true, useUnifiedTopology: true });
 
-function addUser(req, res) {
+async function addUser(req, res) {
    const { name, email, image_url, interests } = req.body;
    let currentUser = {};
    const user = new userInfoModel({
@@ -67,25 +83,24 @@ function addUser(req, res) {
       image_url: req.body.image_url,
       interests: req.body.interests
    });
-   // res.status(200).send()
-   userInfoModel.find({ email: email }, (error, userData) => {
-      if (error) {
-         res.send('User not found');
+   console.log('user', user);
+   let dbData = await userInfoModel.find({});
+   console.log(dbData);
+   dbData.map(item => {
+      if (item.email === email) {
+         currentUser = user;
       }
-      else {
-         userData.forEach(item => {
-            if (item.email === email) {
-               currentUser = item;
-            }
-         })
-      }
-      console.log(currentUser);
    })
-   user.save();
+
+   if (Object.keys(currentUser).length === 0) {
+      currentUser = user;
+      user.save();
+   }
    res.send(currentUser);
 }
 const currencySchema = new mongoose.Schema({
-   name: String,
+   name1: String,
+   name2: String,
    price: Number
 })
 
@@ -114,22 +129,25 @@ const userFeedbackModel = mongoose.model('contactUs', userFeedbackSchema)
 
 function currencySeed() {
    const USD = new currencyModel({
-      name: 'US Dollar',
+      name1: 'USD',
+      name2: 'GBP',
       price: 1
    })
-   const EUR = new currencyModel({
-      name: 'Euro',
-      price: 1.13
+   const GBP = new currencyModel({
+      name1: 'USD',
+      name2: 'GBP',
+      price: 1
    })
 
-   const GPB = new currencyModel({
-      name: 'British Pound',
-      price: 1.25
+   const EUR = new currencyModel({
+      name1: 'USD',
+      name2: 'GBP',
+      price: 1
    })
 
    USD.save();
    EUR.save();
-   GPB.save();
+   GBP.save();
 }
 
 
@@ -182,8 +200,9 @@ function contactHandler(req, res) {
       userNumber: req.body.userNumber,
       userFeedback: req.body.userFeedback,
    });
-   feedbackuser.save();
-   res.send(feedbackuser);
+   currentUser = feedbackuser;
+   currentUser.save();
+   res.send(currentUser);
 
    console.log('handlerFunction', feedbackuser);
 }
