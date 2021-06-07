@@ -15,8 +15,8 @@ server.use(bp.urlencoded({ extended: true }));
 server.get('/', (req, res) => {
    res.status(200).send('Home');
 })
-server.get('/getfeed',async (req, res) => {
-   let data =await userFeedbackModel.find({});
+server.get('/getfeed', async (req, res) => {
+   let data = await userFeedbackModel.find({});
    console.log(data);
    res.status(200).send(data);
 })
@@ -42,6 +42,9 @@ server.get('/rate', exchange);
 server.post('/contactUs', contactHandler)
 server.get('/convert', converter);
 server.get('/symbols', symbols);
+
+server.delete('/deletefeed/:index', deleteFeedHandler);
+
 
 server.get('*', (req, res) => {
 
@@ -128,6 +131,8 @@ function currencySeed() {
    EUR.save();
    GPB.save();
 }
+
+
 // currencySeed();
 function infoSeed() {
    const mohammed = new userInfoModel({
@@ -152,6 +157,19 @@ function infoSeed() {
    })
    mohammed.save();
 }
+
+
+function ContactUsseed() {
+   const newUser = new userFeedbackModel({
+      userName: 'maryam',
+      userEmail: 'maryam@gmail.com',
+      userNumber: '0790790790',
+      userFeedback: 'Hello',
+
+   })
+   // console.log(newUser);
+   newUser.save();
+}
 // infoSeed();
 function contactHandler(req, res) {
 
@@ -168,20 +186,30 @@ function contactHandler(req, res) {
    res.send(feedbackuser);
 
    console.log('handlerFunction', feedbackuser);
-   console.log('555555555');
 }
 
-function ContactUsseed() {
-   const newUser = new userFeedbackModel({
-      userName: 'maryam',
-      userEmail: 'maryam@gmail.com',
-      userNumber: '0790790790',
-      userFeedback: 'Hello',
+async function deleteFeedHandler(req, res) {
+   const email = req.body.userEmail;
+   const index = Number(req.params.index)
+   let allFeeds = await userFeedbackModel.find({});
 
-   })
-   // console.log(newUser);
-   newUser.save();
+  let newFeeds = allFeeds.filter((item,idx) => {
+      // console.log(item);
+      if (idx !== index) {
+           return item ;
+      
+   }
+})
+console.log(newFeeds);
+res.send(allFeeds);
+  
+   
+   // console.log('req.query');
 }
+
+
+
+
 // ContactUsseed();
 
 // userName: String,
