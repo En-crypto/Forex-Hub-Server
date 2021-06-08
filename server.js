@@ -43,6 +43,21 @@ server.post('/contactUs', contactHandler);
 server.post('/addToFavorite', addToFavorite);
 server.get('/convert', converter);
 server.get('/symbols', symbols);
+server.get('/getFavData', getFavData);
+
+async function getFavData (req,res) {
+   let myEmail = req.query.email;
+   await userInfoModel.find({email:myEmail} , (err,data) => {
+      if(err) {
+         console.log(err);
+      }
+
+      else{
+         res.status(200).send(data[0].favCurrency);
+         console.log(data);
+      }
+   })
+}
 function addToFavorite(req, res) {
    const { name1, name2, price, email } = req.body
    userInfoModel.find({ email: email }, (err, data) => {
@@ -52,11 +67,9 @@ function addToFavorite(req, res) {
       } else {
          data[0].favCurrency.push({ name1, name2, price });
          data[0].save();
-         console.log(data);
+         res.status(200).send(data[0].favCurrency);
       }
    });
-
-   res.status(200).send(name1);
 
 }
 
@@ -218,7 +231,7 @@ function addToFavorite(req, res) {
       })
       
       userFeedbackModel.findByIdAndDelete(id , (err) => {
-         if(!err) {
+         if(err) {
             console.log(err)
          }
       });
