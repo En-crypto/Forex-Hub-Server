@@ -35,8 +35,8 @@ const symbols = require('./symbols');
 
 const history = require('./state');
 
+server.post('/addUser', addUser);
 server.get('/history', history);
-
 server.delete('/deletefeed/:index', deleteFeedHandler);
 server.get('/rate', exchange);
 server.post('/contactUs', contactHandler);
@@ -45,6 +45,34 @@ server.get('/convert', converter);
 server.get('/symbols', symbols);
 server.get('/getFavData', getFavData);
 
+const mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost:27017',
+   { useNewUrlParser: true, useUnifiedTopology: true });
+
+async function addUser(req, res) {
+   const { name, email, image_url, interests } = req.body;
+   let currentUser = {};
+   const user = new userInfoModel({
+      name: req.body.name,
+      email: req.body.email,
+      image_url: req.body.image_url,
+      interests: req.body.interests
+   });
+   console.log('user', user);
+   let dbData = await userInfoModel.find({});
+   dbData.map(item => {
+      if (item.email === email) {
+         currentUser = user;
+      }
+   })
+
+   if (Object.keys(currentUser).length === 0) {
+      currentUser = user;
+      user.save();
+   }
+   res.send(currentUser);
+}
 async function getFavData (req,res) {
    let myEmail = req.query.email;
    await userInfoModel.find({email:myEmail} , (err,data) => {
@@ -79,36 +107,6 @@ function addToFavorite(req, res) {
    });
 
 
-   server.post('/addUser', addUser);
-   const mongoose = require('mongoose');
-
-   mongoose.connect('mongodb://localhost:27017',
-      { useNewUrlParser: true, useUnifiedTopology: true });
-
-   async function addUser(req, res) {
-      const { name, email, image_url, interests } = req.body;
-      let currentUser = {};
-      const user = new userInfoModel({
-         name: req.body.name,
-         email: req.body.email,
-         image_url: req.body.image_url,
-         interests: req.body.interests
-      });
-      console.log('user', user);
-      let dbData = await userInfoModel.find({});
-      console.log(dbData);
-      dbData.map(item => {
-         if (item.email === email) {
-            currentUser = user;
-         }
-      })
-
-      if (Object.keys(currentUser).length === 0) {
-         currentUser = user;
-         user.save();
-      }
-      res.send(currentUser);
-   }
    const currencySchema = new mongoose.Schema({
       name1: String,
       name2: String,
