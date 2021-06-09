@@ -25,8 +25,6 @@ function  gethistoricalData(req,res) {
         resultArr.push(Math.sign(GBP));
         resultArr.push(Math.sign(JOD));
         resultArr.push(Math.sign(USD));
-        console.log(final);
-        console.log('final', AUD);
         res.status(200).send(resultArr);
 
     })

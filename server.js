@@ -59,7 +59,6 @@ async function addUser(req, res) {
       image_url: req.body.image_url,
       interests: req.body.interests
    });
-   console.log('user', user);
    let dbData = await userInfoModel.find({});
    dbData.map(item => {
       if (item.email === email) {
@@ -213,7 +212,6 @@ function addToFavorite(req, res) {
       currentUser.save();
       res.send(currentUser);
 
-      console.log('handlerFunction', feedbackuser);
    }
 
    async function deleteFeedHandler(req, res) {
