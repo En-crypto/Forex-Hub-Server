@@ -49,11 +49,11 @@ async function getFavData (req,res) {
    let myEmail = req.query.email;
    await userInfoModel.find({email:myEmail} , (err,data) => {
       if(err) {
-         console.log(err);
+         console.log('nothing to show');
       }
 
       else{
-         res.status(200).send(data[0].favCurrency);
+            res.status(200).send(data[0].favCurrency);
          console.log(data);
       }
    })
